@@ -1,0 +1,11 @@
+{
+  "name": "auditguard-iams-amplify",
+  "type": "module",
+  "devDependencies": {
+    "@aws-amplify/backend": "^1.4.0",
+    "@aws-amplify/backend-cli": "^1.4.0",
+    "aws-cdk-lib": "^2.158.0",
+    "constructs": "^10.3.0",
+    "typescript": "^5.5.0"
+  }
+}

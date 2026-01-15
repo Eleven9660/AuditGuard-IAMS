@@ -2,6 +2,8 @@
 import React from 'react';
 import { LayoutDashboard, FileText, ClipboardList, ShieldAlert, BarChart3, Settings, BookOpen, LogOut, PieChart, Bell } from 'lucide-react';
 import { NavItem } from '../types';
+import { useAuth } from '../src/context/AuthContext';
+import { useNotifications } from '../src/hooks/useNotifications';
 
 interface SidebarProps {
   currentView: string;
@@ -19,6 +21,21 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => {
+  const { user, signOut } = useAuth();
+  const { unreadCount } = useNotifications(user?.userId);
+
+  const userInitials = user?.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'U';
+
+  const roleLabel = user?.role === 'ADMIN' ? 'Administrator' :
+                    user?.role === 'AUDITOR' ? 'Auditor' :
+                    user?.role === 'MANAGER' ? 'Manager' : 'Viewer';
+
+  const handleLogout = async () => {
+    await signOut();
+  };
+
   return (
     <div className="w-72 bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-slate-300 h-screen flex flex-col fixed left-0 top-0 shadow-2xl z-50">
       {/* Brand Header */}
@@ -71,7 +88,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
             >
               <Bell size={20} className="group-hover:text-amber-400 transition-colors" />
               <span className="font-medium text-sm tracking-wide">Notifications</span>
-              <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto">3</span>
+              {unreadCount > 0 && (
+                <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto">{unreadCount}</span>
+              )}
             </button>
         </div>
       </nav>
@@ -81,22 +100,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate }) => 
         <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700/50 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white shadow-inner border-2 border-slate-700">
-              JD
+              {userInitials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate font-heading">Jane Doe</p>
-              <p className="text-xs text-slate-400 truncate">Head of Audit</p>
+              <p className="text-sm font-bold text-white truncate font-heading">{user?.name || 'User'}</p>
+              <p className="text-xs text-slate-400 truncate">{roleLabel}</p>
             </div>
           </div>
           <div className="flex gap-1">
-             <button 
+             <button
                 onClick={() => onNavigate('settings')}
                 title="Settings"
                 className={`flex-1 flex items-center justify-center gap-2 py-1.5 rounded-lg transition-colors text-xs font-medium ${currentView === 'settings' ? 'bg-orange-600 text-white shadow-lg' : 'hover:bg-slate-700/50 text-slate-400 hover:text-white'}`}
              >
                <Settings size={14} /> Settings
              </button>
-             <button 
+             <button
+                onClick={handleLogout}
                 title="Logout"
                 className="flex-1 flex items-center justify-center gap-2 py-1.5 rounded-lg hover:bg-slate-700/50 text-slate-400 hover:text-white transition-colors text-xs font-medium">
                <LogOut size={14} /> Logout
