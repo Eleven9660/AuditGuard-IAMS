@@ -108,6 +108,7 @@ const schema = a.schema({
     date: a.datetime(),
     read: a.boolean().default(false),
     type: a.enum(['INFO', 'WARNING', 'SUCCESS', 'ERROR']),
+    owner: a.string(),
     // Relationships
     user: a.belongsTo('UserProfile', 'userId'),
   }).authorization((allow) => [
@@ -163,5 +164,8 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: 'userPool',
+    apiKeyAuthorizationMode: {
+      expiresInMinutes: 20,
+    },
   },
 });
