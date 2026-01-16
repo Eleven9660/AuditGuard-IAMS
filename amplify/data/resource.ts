@@ -164,8 +164,8 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: 'userPool',
-    apiKeyAuthorizationMode: {
-      expiresInMinutes: 20,
-    },
+    apiKeyAuthorizationMode: { // API Key is used for public access to some data, e.g., initial setup or public forms
+      expiresInDays: 7, // Set a reasonable expiration for the API key
+    }, 
   },
 });
