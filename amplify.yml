@@ -22,6 +22,10 @@ frontend:
     baseDirectory: dist
     files:
       - '**/*'
+  rewrites:
+    - source: '</^[^.]+$|\.(?!js$|css$|gif$|jpg$|jpeg$|png$|svg$|webp$|woff$|woff2$|eot$|ttf$|otf$)([^.]+)$/>'
+      target: '/index.html'
+      status: '200'
   cache:
     paths:
       - node_modules/**/*
